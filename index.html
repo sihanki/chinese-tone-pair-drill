@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chinese Tone Drill</title>
+    <style>
+        :root {
+            --primary-color: #e74c3c;
+            --secondary-color: #3498db;
+            --background-color: #f9f9f9;
+            --text-color: #333;
+            --light-gray: #ecf0f1;
+            --success-color: #2ecc71;
+            --error-color: #e74c3c;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Arial', sans-serif;
+        }
+        
+        body {
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        h1, h2, h3 {
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+        
+        button {
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 5px;
+            transition: background-color 0.3s;
+        }
+        
+        button:hover {
+            background-color: #2980b9;
+        }
+        
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        /* Menu Styles */
+        .menu-container {
+            text-align: center;
+        }
+        
+        .menu-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .menu-buttons button {
+            padding: 15px;
+            font-size: 18px;
+        }
+        
+        /* Drill Styles */
+        .drill-container {
+            text-align: center;
+        }
+        
+        .audio-controls {
+            margin: 20px 0;
+        }
+        
+        .play-button {
+            font-size: 24px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background-color: var(--primary-color);
+        }
+        
+        .tone-selection {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin: 20px 0;
+        }
+        
+        .tone-option {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .tone-button {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            font-size: 18px;
+            background-color: var(--light-gray);
+            color: var(--text-color);
+        }
+        
+        .tone-button.selected {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+        
+        .feedback {
+            margin: 20px 0;
+            padding: 15px;
+            border-radius: 5px;
+        }
+        
+        .correct {
+            background-color: rgba(46, 204, 113, 0.2);
+            color: var(--success-color);
+        }
+        
+        .incorrect {
+            background-color: rgba(231, 76, 60, 0.2);
+            color: var(--error-color);
+        }
+        
+        /* Statistics Styles */
+        .stats-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        
+        .stats-table th, .stats-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+        
+        .stats-table th {
+            background-color: var(--light-gray);
+        }
+        
+        .stats-table tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        
+        /* History Styles */
+        .history-container ul {
+            list-style-type: none;
+            margin: 20px 0;
+        }
+        
+        .history-container li {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+            cursor: pointer;
+        }
+        
+        .history-container li:hover {
+            background-color: var(--light-gray);
+        }
+        
+        .session-details {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Chinese Tone Drill</h1>
+        
+        <!-- Main Menu -->
+        <div id="menu-screen" class="menu-container">
+            <p>Practice identifying Chinese tones in two-character words</p>
+            <div class="menu-buttons">
+                <button id="start-button">Start Drill</button>
+                <button id="history-button">View History</button>
+            </div>
+        </div>
+        
+        <!-- Drill Screen -->
+        <div id="drill-screen" class="drill-container hidden">
+            <h2>Tone Identification</h2>
+            
+            <div class="audio-controls">
+                <button id="play-audio" class="play-button">▶</button>
+            </div>
+            
+            <div class="tone-selection">
+                <div class="tone-option">
+                    <h3>First Character</h3>
+                    <div>
+                        <button class="tone-button" data-tone="1" data-position="first">1</button>
+                        <button class="tone-button" data-tone="2" data-position="first">2</button>
+                        <button class="tone-button" data-tone="3" data-position="first">3</button>
+                        <button class="tone-button" data-tone="4" data-position="first">4</button>
+                    </div>
+                </div>
+                
+                <div class="tone-option">
+                    <h3>Second Character</h3>
+                    <div>
+                        <button class="tone-button" data-tone="0" data-position="second">0</button>
+                        <button class="tone-button" data-tone="1" data-position="second">1</button>
+                        <button class="tone-button" data-tone="2" data-position="second">2</button>
+                        <button class="tone-button" data-tone="3" data-position="second">3</button>
+                        <button class="tone-button" data-tone="4" data-position="second">4</button>
+                    </div>
+                </div>
+            </div>
+            
+            <button id="submit-answer" disabled>Submit Answer</button>
+            
+            <div id="feedback" class="feedback hidden"></div>
+            
+            <button id="next-word" class="hidden">Next Word</button>
+            <button id="stop-drill">Stop Drill</button>
+        </div>
+        
+        <!-- Statistics Screen -->
+        <div id="stats-screen" class="hidden">
+            <h2>Drill Results</h2>
+            <div id="overall-stats"></div>
+            
+            <h3>Tone Pattern Accuracy</h3>
+            <table class="stats-table">
+                <thead>
+                    <tr>
+                        <th>Tone Pattern</th>
+                        <th>Total Attempts</th>
+                        <th>Correct</th>
+                        <th>Accuracy</th>
+                    </tr>
+                </thead>
+                <tbody id="pattern-stats">
+                    <!-- Will be populated by JavaScript -->
+                </tbody>
+            </table>
+            
+            <h3>Word Results</h3>
+            <table class="stats-table">
+                <thead>
+                    <tr>
+                        <th>Word</th>
+                        <th>Pinyin</th>
+                        <th>Pattern</th>
+                        <th>Your Answer</th>
+                        <th>Result</th>
+                    </tr>
+                </thead>
+                <tbody id="word-results">
+                    <!-- Will be populated by JavaScript -->
+                </tbody>
+            </table>
+            
+            <button id="back-to-menu-from-stats">Back to Menu</button>
+        </div>
+        
+        <!-- History Screen -->
+        <div id="history-screen" class="history-container hidden">
+            <h2>Practice History</h2>
+            
+            <div id="no-history" class="hidden">
+                <p>No previous practice sessions found.</p>
+            </div>
+            
+            <ul id="history-list">
+                <!-- Will be populated by JavaScript -->
+            </ul>
+            
+            <div id="session-details" class="session-details hidden">
+                <!-- Session details will be shown here -->
+            </div>
+            
+            <button id="back-to-menu-from-history">Back to Menu</button>
+        </div>
+    </div>
+
+    <script>
+        // Application state
+        const state = {
+            words: [],
+            currentWord: null,
+            currentAudio: null,
+            currentSession: {
+                startTime: null,
+                endTime: null,
+                results: []
+            },
+            selectedTones: {
+                first: null,
+                second: null
+            },
+            history: []
+        };
+
+        // DOM Elements
+        const menuScreen = document.getElementById('menu-screen');
+        const drillScreen = document.getElementById('drill-screen');
+        const statsScreen = document.getElementById('stats-screen');
+        const historyScreen = document.getElementById('history-screen');
+        
+        const startButton = document.getElementById('start-button');
+        const historyButton = document.getElementById('history-button');
+        const playAudioButton = document.getElementById('play-audio');
+        const submitAnswerButton = document.getElementById('submit-answer');
+        const nextWordButton = document.getElementById('next-word');
+        const stopDrillButton = document.getElementById('stop-drill');
+        const feedbackDiv = document.getElementById('feedback');
+        const backToMenuFromStats = document.getElementById('back-to-menu-from-stats');
+        const backToMenuFromHistory = document.getElementById('back-to-menu-from-history');
+        
+        const toneButtons = document.querySelectorAll('.tone-button');
+        const patternStatsBody = document.getElementById('pattern-stats');
+        const wordResultsBody = document.getElementById('word-results');
+        const overallStatsDiv = document.getElementById('overall-stats');
+        const historyList = document.getElementById('history-list');
+        const sessionDetails = document.getElementById('session-details');
+        const noHistory = document.getElementById('no-history');
+
+        // Initialize application
+        document.addEventListener('DOMContentLoaded', () => {
+            // Load data and history
+            loadWordData();
+            loadHistory();
+            
+            // Set up event listeners
+            startButton.addEventListener('click', startDrill);
+            historyButton.addEventListener('click', showHistory);
+            playAudioButton.addEventListener('click', playCurrentAudio);
+            submitAnswerButton.addEventListener('click', checkAnswer);
+            nextWordButton.addEventListener('click', nextWord);
+            stopDrillButton.addEventListener('click', finishDrill);
+            backToMenuFromStats.addEventListener('click', showMenu);
+            backToMenuFromHistory.addEventListener('click', showMenu);
+            
+            toneButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const position = button.dataset.position;
+                    const tone = button.dataset.tone;
+                    selectTone(position, tone, button);
+                });
+            });
+        });
+
+        // Load word data from JSON file
+        async function loadWordData() {
+            try {
+                const response = await fetch('data.json');
+                state.words = await response.json();
+                console.log(`Loaded ${state.words.length} words`);
+            } catch (error) {
+                console.error('Error loading word data:', error);
+                alert('Failed to load word data. Please make sure data.json is in the correct location.');
+            }
+        }
+
+        // Load history from localStorage
+        function loadHistory() {
+            const savedHistory = localStorage.getItem('toneDrillHistory');
+            if (savedHistory) {
+                state.history = JSON.parse(savedHistory);
+            }
+        }
+
+        // Save history to localStorage
+        function saveHistory() {
+            localStorage.setItem('toneDrillHistory', JSON.stringify(state.history));
+        }
+
+        // Navigation functions
+        function showMenu() {
+            menuScreen.classList.remove('hidden');
+            drillScreen.classList.add('hidden');
+            statsScreen.classList.add('hidden');
+            historyScreen.classList.add('hidden');
+        }
+
+        function showDrill() {
+            menuScreen.classList.add('hidden');
+            drillScreen.classList.remove('hidden');
+            statsScreen.classList.add('hidden');
+            historyScreen.classList.add('hidden');
+        }
+
+        function showStats() {
+            menuScreen.classList.add('hidden');
+            drillScreen.classList.add('hidden');
+            statsScreen.classList.remove('hidden');
+            historyScreen.classList.add('hidden');
+            
+            displayStats();
+        }
+
+        function showHistory() {
+            menuScreen.classList.add('hidden');
+            drillScreen.classList.add('hidden');
+            statsScreen.classList.add('hidden');
+            historyScreen.classList.remove('hidden');
+            
+            displayHistory();
+        }
+
+        // Drill functions
+        function startDrill() {
+            if (state.words.length === 0) {
+                alert('Word data not loaded yet. Please try again.');
+                return;
+            }
+            
+            // Initialize new session
+            state.currentSession = {
+                startTime: new Date(),
+                endTime: null,
+                results: []
+            };
+            
+            state.selectedTones = {
+                first: null,
+                second: null
+            };
+            
+            showDrill();
+            nextWord();
+        }
+
+        function nextWord() {
+            // Reset UI
+            feedbackDiv.classList.add('hidden');
+            nextWordButton.classList.add('hidden');
+            submitAnswerButton.classList.remove('hidden');
+            submitAnswerButton.disabled = true;
+            
+            // Clear previous selections
+            clearToneSelection();
+            
+            // Select a random word
+            const randomIndex = Math.floor(Math.random() * state.words.length);
+            state.currentWord = state.words[randomIndex];
+
+            state.currentAudio = new Audio(`audio/${state.currentWord.audio}`);
+            state.currentAudio.load();
+
+            playCurrentAudio();
+            
+            // Preload audio
+            // const audio = new Audio(`audio/${state.currentWord.audio}`);
+            // audio.load();
+        }
+
+        function playCurrentAudio() {
+            // if (!state.currentWord) return;
+            if (!state.currentAudio) return;
+            
+            // const audio = new Audio(`audio/${state.currentWord.audio}`);
+            state.currentAudio.play().catch(error => {
+                console.error('Error playing audio:', error);
+                alert(`Error playing audio: ${state.currentWord.audio}. Make sure the audio files are in the audio/ directory.`);
+            });
+        }
+
+        function selectTone(position, tone, button) {
+            // Update selected tone
+            state.selectedTones[position] = tone;
+            
+            // Update UI
+            clearToneSelection(position);
+            button.classList.add('selected');
+            
+            // Enable submit button if both tones are selected
+            if (state.selectedTones.first && state.selectedTones.second) {
+                submitAnswerButton.disabled = false;
+            }
+        }
+
+        function clearToneSelection(position = null) {
+            if (position) {
+                // Clear only the specified position
+                document.querySelectorAll(`.tone-button[data-position="${position}"]`).forEach(btn => {
+                    btn.classList.remove('selected');
+                });
+            } else {
+                // Clear all selections
+                toneButtons.forEach(btn => {
+                    btn.classList.remove('selected');
+                });
+            }
+        }
+
+        function checkAnswer() {
+            if (!state.currentWord || !state.selectedTones.first || !state.selectedTones.second) return;
+            
+            const userPattern = `${state.selectedTones.first} ${state.selectedTones.second}`;
+            const isCorrect = userPattern === state.currentWord.pattern;
+            
+            // Save result
+            state.currentSession.results.push({
+                word: state.currentWord.expression,
+                pinyin: state.currentWord.pinyin,
+                correctPattern: state.currentWord.pattern,
+                userPattern: userPattern,
+                correct: isCorrect
+            });
+            
+            // Show feedback
+            feedbackDiv.classList.remove('hidden');
+            feedbackDiv.textContent = isCorrect 
+                ? 'Correct! Well done!' 
+                : `Incorrect. The correct pattern was: ${state.currentWord.pattern}`;
+                
+            feedbackDiv.className = isCorrect ? 'feedback correct' : 'feedback incorrect';
+            
+            // Update UI
+            submitAnswerButton.classList.add('hidden');
+            nextWordButton.classList.remove('hidden');
+        }
+
+        function finishDrill() {
+            if (state.currentSession.results.length === 0) {
+                // No results, just go back to menu
+                showMenu();
+                return;
+            }
+            
+            // Complete session
+            state.currentSession.endTime = new Date();
+            
+            // Add to history
+            state.history.push(state.currentSession);
+            
+            // Save history
+            saveHistory();
+            
+            // Show statistics
+            showStats();
+        }
+
+        // Statistics functions
+        function displayStats() {
+            const results = state.currentSession.results;
+            
+            // Calculate overall stats
+            const total = results.length;
+            const correct = results.filter(r => r.correct).length;
+            const accuracy = total > 0 ? Math.round((correct / total) * 100) : 0;
+            
+            overallStatsDiv.innerHTML = `
+                <p>Total words: ${total}</p>
+                <p>Correct answers: ${correct}</p>
+                <p>Accuracy: ${accuracy}%</p>
+            `;
+            
+            // Calculate pattern statistics
+            const patternStats = {};
+            results.forEach(result => {
+                if (!patternStats[result.correctPattern]) {
+                    patternStats[result.correctPattern] = {
+                        total: 0,
+                        correct: 0
+                    };
+                }
+                
+                patternStats[result.correctPattern].total++;
+                if (result.correct) {
+                    patternStats[result.correctPattern].correct++;
+                }
+            });
+            
+            // Display pattern statistics
+            patternStatsBody.innerHTML = '';
+            for (const pattern in patternStats) {
+                const stats = patternStats[pattern];
+                const accuracy = stats.total > 0 ? Math.round((stats.correct / stats.total) * 100) : 0;
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${pattern}</td>
+                    <td>${stats.total}</td>
+                    <td>${stats.correct}</td>
+                    <td>${accuracy}%</td>
+                `;
+                patternStatsBody.appendChild(row);
+            }
+            
+            // Display word results
+            wordResultsBody.innerHTML = '';
+            results.forEach(result => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${result.word}</td>
+                    <td>${result.pinyin}</td>
+                    <td>${result.correctPattern}</td>
+                    <td>${result.userPattern}</td>
+                    <td>${result.correct ? '✓' : '✗'}</td>
+                `;
+                wordResultsBody.appendChild(row);
+            });
+        }
+
+        // History functions
+        function displayHistory() {
+            if (state.history.length === 0) {
+                noHistory.classList.remove('hidden');
+                historyList.classList.add('hidden');
+                return;
+            }
+            
+            noHistory.classList.add('hidden');
+            historyList.classList.remove('hidden');
+            
+            // Clear previous list
+            historyList.innerHTML = '';
+            
+            // Add history items
+            state.history.forEach((session, index) => {
+                const startTime = new Date(session.startTime);
+                const total = session.results.length;
+                const correct = session.results.filter(r => r.correct).length;
+                const accuracy = total > 0 ? Math.round((correct / total) * 100) : 0;
+                
+                const li = document.createElement('li');
+                li.innerHTML = `
+                    ${startTime.toLocaleString()} - ${total} words, ${accuracy}% accuracy
+                `;
+                
+                li.addEventListener('click', () => {
+                    displaySessionDetails(index);
+                });
+                
+                historyList.appendChild(li);
+            });
+        }
+
+        function displaySessionDetails(sessionIndex) {
+            const session = state.history[sessionIndex];
+            const startTime = new Date(session.startTime);
+            const endTime = new Date(session.endTime);
+            const duration = Math.round((endTime - startTime) / 1000 / 60); // in minutes
+            
+            const total = session.results.length;
+            const correct = session.results.filter(r => r.correct).length;
+            const accuracy = total > 0 ? Math.round((correct / total) * 100) : 0;
+            
+            // Calculate pattern statistics
+            const patternStats = {};
+            session.results.forEach(result => {
+                if (!patternStats[result.correctPattern]) {
+                    patternStats[result.correctPattern] = {
+                        total: 0,
+                        correct: 0
+                    };
+                }
+                
+                patternStats[result.correctPattern].total++;
+                if (result.correct) {
+                    patternStats[result.correctPattern].correct++;
+                }
+            });
+            
+            let patternStatsHTML = '';
+            for (const pattern in patternStats) {
+                const stats = patternStats[pattern];
+                const patternAccuracy = stats.total > 0 ? Math.round((stats.correct / stats.total) * 100) : 0;
+                
+                patternStatsHTML += `
+                    <tr>
+                        <td>${pattern}</td>
+                        <td>${stats.total}</td>
+                        <td>${stats.correct}</td>
+                        <td>${patternAccuracy}%</td>
+                    </tr>
+                `;
+            }
+            
+            sessionDetails.innerHTML = `
+                <h3>Session Details</h3>
+                <p>Started: ${startTime.toLocaleString()}</p>
+                <p>Duration: ${duration} minutes</p>
+                <p>Total words: ${total}</p>
+                <p>Correct answers: ${correct}</p>
+                <p>Accuracy: ${accuracy}%</p>
+                
+                <h4>Tone Pattern Performance</h4>
+                <table class="stats-table">
+                    <thead>
+                        <tr>
+                            <th>Tone Pattern</th>
+                            <th>Total Attempts</th>
+                            <th>Correct</th>
+                            <th>Accuracy</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${patternStatsHTML}
+                    </tbody>
+                </table>
+                
+                <h4>Word Results</h4>
+                <table class="stats-table">
+                    <thead>
+                        <tr>
+                            <th>Word</th>
+                            <th>Pinyin</th>
+                            <th>Pattern</th>
+                            <th>Your Answer</th>
+                            <th>Result</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${session.results.map(result => `
+                            <tr>
+                                <td>${result.word}</td>
+                                <td>${result.pinyin}</td>
+                                <td>${result.correctPattern}</td>
+                                <td>${result.userPattern}</td>
+                                <td>${result.correct ? '✓' : '✗'}</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+            
+            sessionDetails.classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>
