@@ -1,0 +1,59 @@
+name: github-pages
+on:
+  push:
+    branches:
+      - master
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout this repo
+        uses: actions/checkout@v7
+
+      - name: Checkout audio repo
+        uses: actions/checkout@v7
+        with:
+          repository: sihanki/audio-cmn
+          path: audio-cmn
+
+      - name: Move audio files
+        run: mv audio-cmn/96k/hsk public/audio
+
+      - name: Move data.json
+        run: mv data.json public/
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Bun install
+        run: bun install
+
+      - name: Move .env
+        run: mv ./.github/workflows/.env .
+
+      - name: Bun build
+        run: bun run build
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: ./dist
+
+  deploy:
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
