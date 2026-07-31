@@ -1,0 +1,41 @@
+:root {
+  --tone-0: #8a94a6;
+  --tone-1: #d94a4a;
+  --tone-2: #e0883a;
+  --tone-3: #3aa66b;
+  --tone-4: #3b7fd4;
+
+  --bg: #f2f4f7;
+  --card: #ffffff;
+  --text: #1f2430;
+  --muted: #6b7280;
+  --border: #e3e6ea;
+  --success: #2e9e5b;
+  --error: #d64545;
+  --accent: #26303f;
+
+  font-family:
+    system-ui,
+    -apple-system,
+    'Segoe UI',
+    Roboto,
+    'PingFang SC',
+    'Hiragino Sans GB',
+    'Microsoft YaHei',
+    sans-serif;
+  color: var(--text);
+  background: var(--bg);
+  -webkit-font-smoothing: antialiased;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+}
+
+#root {
+  min-height: 100svh;
+}
