@@ -2,6 +2,7 @@ import { useMemo } from 'react'
 import type { AnswerRecord } from '../types'
 import { formatPattern } from '../data'
 import { audioUrl } from '../config'
+import PlayIcon from './PlayIcon'
 
 interface Props {
   results: AnswerRecord[]
@@ -117,7 +118,7 @@ export default function ResultsScreen({ results, startTime, endTime, onRestart }
                     aria-label={`Play ${r.word.expression}`}
                     onClick={() => playAudio(r.word.audio)}
                   >
-                    ▶
+                    <PlayIcon size={24} />
                   </button>
                 </td>
               </tr>

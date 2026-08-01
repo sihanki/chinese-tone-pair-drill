@@ -399,7 +399,6 @@ h2 {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding-left: 2px;
   transition: opacity 0.15s;
 }
 

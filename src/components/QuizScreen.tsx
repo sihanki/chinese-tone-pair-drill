@@ -3,6 +3,7 @@ import type { AnswerRecord, Word } from '../types'
 import { FIRST_TONES, SECOND_TONES, formatPattern, toneLabel } from '../data'
 import { markSyllable } from '../pinyin'
 import { audioUrl } from '../config'
+import PlayIcon from './PlayIcon'
 
 interface Props {
   questions: Word[]
@@ -108,7 +109,7 @@ export default function QuizScreen({ questions, onFinish, onQuit }: Props) {
           aria-label="Play audio"
           onClick={() => audioRef.current?.play().catch(() => {})}
         >
-          ▶
+          <PlayIcon size={64} />
         </button>
         <button
           type="button"
