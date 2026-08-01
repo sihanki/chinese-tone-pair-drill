@@ -252,9 +252,9 @@ h2 {
   height: 56px;
   padding: 0 10px;
   border-radius: 12px;
-  border: 2px solid var(--tc);
-  background: color-mix(in srgb, var(--tc) 10%, white);
-  color: var(--tc);
+  border: 2px solid var(--border);
+  background: var(--card);
+  color: var(--text);
   font-size: 17px;
   font-weight: 700;
   cursor: pointer;
@@ -266,7 +266,7 @@ h2 {
 }
 
 .tone-btn.selected {
-  background: var(--tc);
+  background: var(--tone-2);
   color: #fff;
 }
 
