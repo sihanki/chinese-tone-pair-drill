@@ -9,7 +9,7 @@ export const ALL_PATTERNS: string[] = FIRST_TONES.flatMap((first) =>
 )
 
 export function toneLabel(tone: number): string {
-  return tone === 0 ? '轻声' : String(tone)
+  return String(tone)
 }
 
 export function formatPattern(pattern: string): string {

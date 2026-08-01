@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { Fragment, useMemo, useState } from 'react'
 import type { Word } from '../types'
 import { ALL_PATTERNS, FIRST_TONES, SECOND_TONES, toneLabel } from '../data'
 
@@ -44,17 +44,10 @@ export default function SetupScreen({ groups, onStart }: Props) {
         <h2>1. Choose tone pairs</h2>
         <div
           className="pair-grid"
-          style={{ gridTemplateColumns: `auto repeat(${SECOND_TONES.length}, 1fr)` }}
+          style={{ gridTemplateColumns: `repeat(${SECOND_TONES.length}, 1fr)` }}
         >
-          <div />
-          {SECOND_TONES.map((t) => (
-            <div key={t} className={`grid-head tone-${t}`}>
-              {toneLabel(t)}
-            </div>
-          ))}
           {FIRST_TONES.map((first) => (
-            <div className="grid-row" key={first}>
-              <div className={`grid-head tone-${first}`}>{first}</div>
+            <Fragment key={first}>
               {SECOND_TONES.map((second) => {
                 const pattern = `${first} ${second}`
                 const on = selected.has(pattern)
@@ -72,7 +65,7 @@ export default function SetupScreen({ groups, onStart }: Props) {
                   </button>
                 )
               })}
-            </div>
+            </Fragment>
           ))}
         </div>
         <div className="row-actions">
