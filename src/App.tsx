@@ -5,6 +5,7 @@ import { generateQuestions } from './questions'
 import SetupScreen from './components/SetupScreen'
 import QuizScreen from './components/QuizScreen'
 import ResultsScreen from './components/ResultsScreen'
+import Credits from './components/Credits'
 import './App.css'
 
 type Screen = 'loading' | 'setup' | 'quiz' | 'results'
@@ -45,35 +46,56 @@ export default function App() {
   }
 
   if (screen === 'loading') {
-    return <div className="screen center-screen">Loading words…</div>
+    return (
+      <>
+        <div className="screen center-screen">Loading words…</div>
+        <Credits />
+      </>
+    )
   }
 
   if (screen === 'quiz') {
-    return <QuizScreen questions={questions} onFinish={handleFinish} onQuit={() => setScreen('setup')} />
+    return (
+      <>
+        <QuizScreen questions={questions} onFinish={handleFinish} onQuit={() => setScreen('setup')} />
+        <Credits />
+      </>
+    )
   }
 
   if (screen === 'results') {
     return (
-      <ResultsScreen
-        results={results}
-        startTime={startTime}
-        endTime={endTime}
-        onRestart={() => setScreen('setup')}
-      />
+      <>
+        <ResultsScreen
+          results={results}
+          startTime={startTime}
+          endTime={endTime}
+          onRestart={() => setScreen('setup')}
+        />
+        <Credits />
+      </>
     )
   }
 
   if (error) {
     return (
-      <div className="screen center-screen">
-        <h1>Error</h1>
-        <p>{error}</p>
-        <button type="button" className="btn primary" onClick={() => window.location.reload()}>
-          Retry
-        </button>
-      </div>
+      <>
+        <div className="screen center-screen">
+          <h1>Error</h1>
+          <p>{error}</p>
+          <button type="button" className="btn primary" onClick={() => window.location.reload()}>
+            Retry
+          </button>
+        </div>
+        <Credits />
+      </>
     )
   }
 
-  return <SetupScreen groups={groups} onStart={handleStart} />
+  return (
+    <>
+      <SetupScreen groups={groups} onStart={handleStart} />
+      <Credits />
+    </>
+  )
 }

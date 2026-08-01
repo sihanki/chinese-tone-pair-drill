@@ -24,6 +24,11 @@ Other scripts:
 
 Both live in the repo root; the app itself doesn't serve them, so you must make them available somewhere and point the app at them.
 
+## Credits & Licenses
+
+- **Audio** — Pronunciation recordings by Chen Wang and Yue Tan (CC BY-SA), project and audio compression by [Hugo Lopez](https://github.com/hugolpz) (audio-cmn, https://github.com/hugolpz/audio-cmn).
+- **Word data** — [CC-CEDICT](https://cc-cedict.org/), licensed under the [Creative Commons Attribution-Share Alike 3.0 License](https://creativecommons.org/licenses/by-sa/3.0/).
+
 ## Configuration
 
 The paths to the data file and audio files are set with environment variables (see `.env.example`). Copy it to `.env.local` to set them without editing code. If a variable is unset the app falls back to `/data.json` and `/audio`, but nothing in the repo serves those paths — set both:
