@@ -1,8 +1,8 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import type { AnswerRecord, Word } from '../types'
 import { FIRST_TONES, SECOND_TONES, formatPattern, toneLabel } from '../data'
 import { markSyllable } from '../pinyin'
-import { audioUrl } from '../config'
+import { playAudio, pauseAudio } from '../audio'
 import PlayIcon from './PlayIcon'
 
 interface Props {
@@ -22,7 +22,6 @@ export default function QuizScreen({ questions, onFinish, onQuit }: Props) {
   const [selection, setSelection] = useState<Selection>({ first: null, second: null })
   const [revealed, setRevealed] = useState(false)
   const [results, setResults] = useState<AnswerRecord[]>([])
-  const audioRef = useRef<HTMLAudioElement | null>(null)
 
   const word = questions[index]
   const [correctFirst, correctSecond] = word.pattern.split(' ').map(Number)
@@ -33,12 +32,8 @@ export default function QuizScreen({ questions, onFinish, onQuit }: Props) {
   const isLast = index === total - 1
 
   useEffect(() => {
-    const audio = new Audio(audioUrl(word.audio))
-    audioRef.current = audio
-    audio.play().catch(() => {})
-    return () => {
-      audio.pause()
-    }
+    playAudio(word.audio)
+    return pauseAudio
   }, [index, word])
 
   useEffect(() => {
@@ -107,14 +102,14 @@ export default function QuizScreen({ questions, onFinish, onQuit }: Props) {
           type="button"
           className="play-button"
           aria-label="Play audio"
-          onClick={() => audioRef.current?.play().catch(() => {})}
+          onClick={() => playAudio(word.audio)}
         >
           <PlayIcon size={64} />
         </button>
         <button
           type="button"
           className="btn ghost small"
-          onClick={() => audioRef.current?.play().catch(() => {})}
+          onClick={() => playAudio(word.audio)}
         >
           Replay
         </button>
