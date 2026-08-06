@@ -25,8 +25,16 @@ def split_tones(pinyin):
         if tone == 5:
             tone = 0
         assert 0 <= tone <= 4
+        reading = reading.lower()
         readings.append(reading)
         tones.append(tone)
+    return readings, tones
+
+def process_exceptions(expression, readings, tones):
+    if expression.startswith('一') and expression != '一一' and tones[0] == 1:
+        tones[0] = 2 if tones[1] in (4, 0) else 4
+    if expression.startswith('不') and tones[0] == 4:
+        tones[0] = 2 if tones[1] == 4 else 4
     return readings, tones
 
 with open('cedict_tabs.txt', 'r', encoding='utf-8') as fin:
@@ -38,8 +46,7 @@ with open('cedict_tabs.txt', 'r', encoding='utf-8') as fin:
             _, hanzi, tones, _ = line.split('\t')
             try:
                 readings, tones = split_tones(tones)
-                # assert hanzi not in cedict, hanzi
-                if hanzi in cedict and tones != cedict[hanzi]:
+                if hanzi in cedict and (readings, tones) != cedict[hanzi]:
                     repeats.add(hanzi)
                 else:
                     cedict[hanzi] = (readings, tones)
@@ -50,7 +57,7 @@ result = []
 for word in words_with_audio:
     if word not in cedict or word in repeats or len(cedict[word][1]) != 2:
         continue
-    readings, tones = cedict[word]
+    readings, tones = process_exceptions(word, *cedict[word])
     result.append({
         'expression': word,
         'audio': 'cmn-' + word + '.mp3',
@@ -58,7 +65,7 @@ for word in words_with_audio:
         'pattern': ' '.join(map(str, tones))
     })
 
-with open('words.json', 'w') as fout:
+with open('data.json', 'w') as fout:
     json.dump(result, fout, indent=2, ensure_ascii=False)
 # print(len(files))
 
