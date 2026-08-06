@@ -160,6 +160,22 @@ h2 {
   border-radius: 8px;
 }
 
+.option-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 15px;
+  cursor: pointer;
+  width: fit-content;
+}
+
+.option-row input {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+
 /* Quiz */
 .quiz-screen {
   gap: 20px;
@@ -275,6 +291,34 @@ h2 {
   background: var(--error);
   border-color: var(--error);
   color: #fff;
+}
+
+.keyboard-row {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.keyboard-input {
+  width: 90px;
+  padding: 10px;
+  font-size: 22px;
+  font-weight: 700;
+  text-align: center;
+  border: 2px solid var(--border);
+  border-radius: 10px;
+  outline: none;
+}
+
+.keyboard-input:focus {
+  border-color: var(--accent);
+}
+
+.keyboard-input.readonly {
+  background: var(--bg);
+  color: var(--muted);
 }
 
 .feedback {

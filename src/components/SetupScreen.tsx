@@ -4,12 +4,13 @@ import { ALL_PATTERNS, FIRST_TONES, SECOND_TONES, toneLabel } from '../data'
 
 interface Props {
   groups: Map<string, Word[]>
-  onStart: (selected: string[], count: number) => void
+  onStart: (selected: string[], count: number, keyboardEnabled: boolean) => void
 }
 
 export default function SetupScreen({ groups, onStart }: Props) {
   const [selected, setSelected] = useState<Set<string>>(() => new Set(ALL_PATTERNS))
   const [count, setCount] = useState(20)
+  const [keyboardEnabled, setKeyboardEnabled] = useState(false)
 
   const maxAvailable = useMemo(() => {
     let total = 0
@@ -100,11 +101,23 @@ export default function SetupScreen({ groups, onStart }: Props) {
         </div>
       </div>
 
+      <div className="card">
+        <h2>3. Options</h2>
+        <label className="option-row">
+          <input
+            type="checkbox"
+            checked={keyboardEnabled}
+            onChange={(e) => setKeyboardEnabled(e.target.checked)}
+          />
+          <span>Enable keyboard input</span>
+        </label>
+      </div>
+
       <button
         type="button"
         className="btn primary big"
         disabled={!valid}
-        onClick={() => onStart([...selected], clampedCount)}
+        onClick={() => onStart([...selected], clampedCount, keyboardEnabled)}
       >
         Start Drill
       </button>
