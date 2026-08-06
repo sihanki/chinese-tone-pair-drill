@@ -4,13 +4,14 @@ import { ALL_PATTERNS, FIRST_TONES, SECOND_TONES, toneLabel } from '../data'
 
 interface Props {
   groups: Map<string, Word[]>
-  onStart: (selected: string[], count: number, keyboardEnabled: boolean) => void
+  onStart: (selected: string[], count: number, keyboardEnabled: boolean, listenOnce: boolean) => void
 }
 
 export default function SetupScreen({ groups, onStart }: Props) {
   const [selected, setSelected] = useState<Set<string>>(() => new Set(ALL_PATTERNS))
   const [count, setCount] = useState(20)
   const [keyboardEnabled, setKeyboardEnabled] = useState(false)
+  const [listenOnce, setListenOnce] = useState(false)
 
   const maxAvailable = useMemo(() => {
     let total = 0
@@ -111,13 +112,21 @@ export default function SetupScreen({ groups, onStart }: Props) {
           />
           <span>Enable keyboard input</span>
         </label>
+        <label className="option-row">
+          <input
+            type="checkbox"
+            checked={listenOnce}
+            onChange={(e) => setListenOnce(e.target.checked)}
+          />
+          <span>"Listen once" mode</span>
+        </label>
       </div>
 
       <button
         type="button"
         className="btn primary big"
         disabled={!valid}
-        onClick={() => onStart([...selected], clampedCount, keyboardEnabled)}
+        onClick={() => onStart([...selected], clampedCount, keyboardEnabled, listenOnce)}
       >
         Start Drill
       </button>
