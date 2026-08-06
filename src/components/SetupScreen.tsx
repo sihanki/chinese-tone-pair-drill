@@ -1,6 +1,7 @@
 import { Fragment, useMemo, useState } from 'react'
 import type { Word } from '../types'
 import { ALL_PATTERNS, FIRST_TONES, SECOND_TONES, toneLabel } from '../data'
+import { loadSettings } from '../settings'
 
 interface Props {
   groups: Map<string, Word[]>
@@ -8,10 +9,11 @@ interface Props {
 }
 
 export default function SetupScreen({ groups, onStart }: Props) {
-  const [selected, setSelected] = useState<Set<string>>(() => new Set(ALL_PATTERNS))
-  const [count, setCount] = useState(20)
-  const [keyboardEnabled, setKeyboardEnabled] = useState(false)
-  const [listenOnce, setListenOnce] = useState(false)
+  const [initial] = useState(loadSettings)
+  const [selected, setSelected] = useState<Set<string>>(() => new Set(initial.selected))
+  const [count, setCount] = useState(initial.count)
+  const [keyboardEnabled, setKeyboardEnabled] = useState(initial.keyboardEnabled)
+  const [listenOnce, setListenOnce] = useState(initial.listenOnce)
 
   const maxAvailable = useMemo(() => {
     let total = 0

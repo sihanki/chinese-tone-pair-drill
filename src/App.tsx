@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import type { AnswerRecord, Word } from './types'
 import { groupByPattern, loadWords } from './data'
 import { generateQuestions } from './questions'
+import { saveSettings } from './settings'
 import SetupScreen from './components/SetupScreen'
 import QuizScreen from './components/QuizScreen'
 import ResultsScreen from './components/ResultsScreen'
@@ -34,6 +35,7 @@ export default function App() {
   }, [])
 
   function handleStart(selected: string[], count: number, keyboard: boolean, listenOnce: boolean) {
+    saveSettings({ selected, count, keyboardEnabled: keyboard, listenOnce })
     const { questions: qs } = generateQuestions(groups, selected, count)
     setQuestions(qs)
     setResults([])
