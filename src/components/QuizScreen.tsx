@@ -8,7 +8,7 @@ import PlayIcon from './PlayIcon'
 interface Props {
   questions: Word[]
   onFinish: (results: AnswerRecord[]) => void
-  onQuit: () => void
+  onQuit: (results: AnswerRecord[]) => void
 }
 
 type Position = 'first' | 'second'
@@ -92,7 +92,7 @@ export default function QuizScreen({ questions, onFinish, onQuit }: Props) {
           Question {index + 1} / {total}
         </span>
         <button type="button" className="btn ghost small" onClick={() => {
-          if (window.confirm('Quit the drill? Progress will be lost.')) onQuit()
+          if (window.confirm('Quit the drill?')) onQuit(results)
         }}>
           Quit
         </button>

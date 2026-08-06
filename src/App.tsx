@@ -57,7 +57,11 @@ export default function App() {
   if (screen === 'quiz') {
     return (
       <>
-        <QuizScreen questions={questions} onFinish={handleFinish} onQuit={() => setScreen('setup')} />
+        <QuizScreen
+          questions={questions}
+          onFinish={handleFinish}
+          onQuit={(results) => (results.length > 0 ? handleFinish(results) : setScreen('setup'))}
+        />
         <Credits />
       </>
     )
