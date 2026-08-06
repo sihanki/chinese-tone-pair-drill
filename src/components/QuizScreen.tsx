@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
+import type { KeyboardEvent as ReactKeyboardEvent } from 'react'
 import type { AnswerRecord, Word } from '../types'
 import { FIRST_TONES, SECOND_TONES, formatPattern, isCorrectAnswer, toneLabel } from '../data'
 import { markSyllable } from '../pinyin'
@@ -7,6 +8,7 @@ import PlayIcon from './PlayIcon'
 
 interface Props {
   questions: Word[]
+  keyboardEnabled: boolean
   onFinish: (results: AnswerRecord[]) => void
   onQuit: (results: AnswerRecord[]) => void
 }
@@ -17,11 +19,13 @@ interface Selection {
   second: number | null
 }
 
-export default function QuizScreen({ questions, onFinish, onQuit }: Props) {
+export default function QuizScreen({ questions, keyboardEnabled, onFinish, onQuit }: Props) {
   const [index, setIndex] = useState(0)
   const [selection, setSelection] = useState<Selection>({ first: null, second: null })
   const [revealed, setRevealed] = useState(false)
   const [results, setResults] = useState<AnswerRecord[]>([])
+  const [inputValue, setInputValue] = useState('')
+  const inputRef = useRef<HTMLInputElement>(null)
 
   const word = questions[index]
   const [correctFirst, correctSecond] = word.pattern.split(' ').map(Number)
@@ -40,6 +44,23 @@ export default function QuizScreen({ questions, onFinish, onQuit }: Props) {
     playAudio(word.audio)
     return pauseAudio
   }, [index, word])
+
+  useEffect(() => {
+    function onKeyDown(e: KeyboardEvent) {
+      if (e.repeat || e.ctrlKey || e.metaKey || e.altKey) return
+      if (e.key.toLowerCase() === 'r') {
+        playAudio(word.audio)
+      }
+    }
+    window.addEventListener('keydown', onKeyDown)
+    return () => window.removeEventListener('keydown', onKeyDown)
+  }, [word])
+
+  useEffect(() => {
+    if (keyboardEnabled) {
+      inputRef.current?.focus()
+    }
+  }, [index, keyboardEnabled])
 
   useEffect(() => {
     if (revealed || selection.first === null || selection.second === null) return
@@ -67,6 +88,51 @@ export default function QuizScreen({ questions, onFinish, onQuit }: Props) {
     setIndex((i) => i + 1)
     setSelection({ first: null, second: null })
     setRevealed(false)
+    setInputValue('')
+  }
+
+  function handleInputKeyDown(e: ReactKeyboardEvent<HTMLInputElement>) {
+    if (revealed) {
+      if (e.key === 'Enter') {
+        e.preventDefault()
+        next()
+      }
+      return
+    }
+    if (e.key === 'Backspace') {
+      e.preventDefault()
+      if (selection.second !== null) {
+        setSelection((prev) => ({ ...prev, second: null }))
+        setInputValue(selection.first === null ? '' : String(selection.first))
+      } else {
+        setSelection((prev) => ({ ...prev, first: null }))
+        setInputValue('')
+      }
+      return
+    }
+    if (e.key === 'Enter') {
+      return
+    }
+    if (!/^[0-4]$/.test(e.key)) {
+      if (e.key.length === 1) {
+        e.preventDefault()
+      }
+      return
+    }
+    const digit = Number(e.key)
+    if (selection.first === null) {
+      if (digit < 1 || digit > 4) {
+        e.preventDefault()
+        return
+      }
+      e.preventDefault()
+      setSelection((prev) => ({ ...prev, first: digit }))
+      setInputValue(String(digit))
+    } else {
+      e.preventDefault()
+      setSelection((prev) => ({ ...prev, second: digit }))
+      setInputValue('')
+    }
   }
 
   function toneClass(position: Position, tone: number): string {
@@ -162,6 +228,23 @@ export default function QuizScreen({ questions, onFinish, onQuit }: Props) {
         </div>
       </div>
 
+      {keyboardEnabled && (
+        <div className="keyboard-row">
+          <input
+            ref={inputRef}
+            type="text"
+            inputMode="numeric"
+            autoComplete="off"
+            value={inputValue}
+            readOnly={revealed}
+            className={`keyboard-input${revealed ? ' readonly' : ''}`}
+            onChange={() => {}}
+            onKeyDown={handleInputKeyDown}
+            aria-label="Tone pair via keyboard"
+          />
+          <span className="muted">Type first tone (1–4), then second (0–4). Enter advances.</span>
+        </div>
+      )}
       <div className={`feedback ${revealed ? (correct ? 'correct' : 'incorrect') : 'hidden'}`}>
         {revealed && (
           <>

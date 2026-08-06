@@ -18,6 +18,7 @@ export default function App() {
   const [results, setResults] = useState<AnswerRecord[]>([])
   const [startTime, setStartTime] = useState(0)
   const [endTime, setEndTime] = useState(0)
+  const [keyboardEnabled, setKeyboardEnabled] = useState(false)
 
   useEffect(() => {
     loadWords()
@@ -31,11 +32,12 @@ export default function App() {
       })
   }, [])
 
-  function handleStart(selected: string[], count: number) {
+  function handleStart(selected: string[], count: number, keyboard: boolean) {
     const { questions: qs } = generateQuestions(groups, selected, count)
     setQuestions(qs)
     setResults([])
     setStartTime(Date.now())
+    setKeyboardEnabled(keyboard)
     setScreen('quiz')
   }
 
@@ -59,6 +61,7 @@ export default function App() {
       <>
         <QuizScreen
           questions={questions}
+          keyboardEnabled={keyboardEnabled}
           onFinish={handleFinish}
           onQuit={(results) => (results.length > 0 ? handleFinish(results) : setScreen('setup'))}
         />
