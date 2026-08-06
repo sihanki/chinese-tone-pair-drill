@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react'
 import type { AnswerRecord } from '../types'
 import { formatPattern } from '../data'
+import { markPinyin } from '../pinyin'
 import { playAudio } from '../audio'
 import PlayIcon from './PlayIcon'
 
@@ -116,7 +117,7 @@ export default function ResultsScreen({ results, startTime, endTime, onRestart }
               <tr key={r.index}>
                 <td>{r.index + 1}</td>
                 <td>{r.word.expression}</td>
-                <td className="muted">{r.word.pinyin}</td>
+                <td className="muted">{markPinyin(r.word.pinyin, r.correctPattern)}</td>
                 <td>{formatPattern(r.correctPattern)}</td>
                 <td>{formatPattern(r.userPattern)}</td>
                 <td className={r.correct ? 'ok' : 'no'}>{r.correct ? '✓' : '✗'}</td>

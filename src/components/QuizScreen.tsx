@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import type { KeyboardEvent as ReactKeyboardEvent } from 'react'
 import type { AnswerRecord, Word } from '../types'
 import { FIRST_TONES, SECOND_TONES, formatPattern, isCorrectAnswer, toneLabel } from '../data'
-import { markSyllable } from '../pinyin'
+import { markPinyin, markSyllable } from '../pinyin'
 import { playAudio, pauseAudio } from '../audio'
 import PlayIcon from './PlayIcon'
 
@@ -257,7 +257,7 @@ export default function QuizScreen({ questions, keyboardEnabled, listenOnce, onF
                 : `Incorrect — correct pair: ${formatPattern(word.pattern)}`}
             </p>
             <p className="word-big">{word.expression}</p>
-            <p className="word-pinyin">{word.pinyin}</p>
+            <p className="word-pinyin">{markPinyin(word.pinyin, word.pattern)}</p>
           </>
         )}
       </div>
