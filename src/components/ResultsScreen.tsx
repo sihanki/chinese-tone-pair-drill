@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import type { AnswerRecord } from '../types'
 import { formatPattern } from '../data'
 import { playAudio } from '../audio'
@@ -19,9 +19,15 @@ function formatDuration(ms: number): string {
 }
 
 export default function ResultsScreen({ results, startTime, endTime, onRestart }: Props) {
+  const [onlyIncorrect, setOnlyIncorrect] = useState(false)
   const total = results.length
   const correct = results.filter((r) => r.correct).length
   const accuracy = total > 0 ? Math.round((correct / total) * 100) : 0
+
+  const displayed = useMemo(
+    () => (onlyIncorrect ? results.filter((r) => !r.correct) : results),
+    [results, onlyIncorrect],
+  )
 
   const byPattern = useMemo(() => {
     const map = new Map<string, { attempts: number; correct: number }>()
@@ -85,6 +91,14 @@ export default function ResultsScreen({ results, startTime, endTime, onRestart }
 
       <div className="card">
         <h2>By question</h2>
+        <label className="option-row">
+          <input
+            type="checkbox"
+            checked={onlyIncorrect}
+            onChange={(e) => setOnlyIncorrect(e.target.checked)}
+          />
+          <span>Incorrect only</span>
+        </label>
         <table className="data-table">
           <thead>
             <tr>
@@ -98,7 +112,7 @@ export default function ResultsScreen({ results, startTime, endTime, onRestart }
             </tr>
           </thead>
           <tbody>
-            {results.map((r) => (
+            {displayed.map((r) => (
               <tr key={r.index}>
                 <td>{r.index + 1}</td>
                 <td>{r.word.expression}</td>
