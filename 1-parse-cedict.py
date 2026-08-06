@@ -14,13 +14,13 @@ with open(output_fn, 'w', encoding='utf-8') as fout:
                 line = line[:-1]
 
             line = iter(line)
-            hanzi_simp = join(it.takewhile(lambda c: c != ' ', line))
             hanzi_trad = join(it.takewhile(lambda c: c != ' ', line))
+            hanzi_simp = join(it.takewhile(lambda c: c != ' ', line))
             assert next(line) == '['
             reading = join(it.takewhile(lambda c: c != ']', line))
             assert next(line) == ' '
             meaning = join(line)
             assert meaning[0] == meaning[-1] == '/'
             meaning = meaning[1:-1]
-            fout.write('\t'.join([hanzi_simp, hanzi_trad, reading, meaning]))
+            fout.write('\t'.join([hanzi_trad, hanzi_simp, reading, meaning]))
             fout.write('\n')
