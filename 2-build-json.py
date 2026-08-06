@@ -30,11 +30,24 @@ def split_tones(pinyin):
         tones.append(tone)
     return readings, tones
 
+with open('tone-exceptions.txt', 'r') as fin:
+    exceptions_map = {}
+    for line in fin.readlines():
+        line = line.strip().split('#')[0]
+        if len(line) == 0:
+            continue
+        expression, pattern = line.strip().split('\t')
+        pattern = [int(x) for x in pattern.split(' ')]
+        assert len(pattern) == 2
+        exceptions_map[expression] = pattern
+
 def process_exceptions(expression, readings, tones):
     if expression.startswith('一') and expression != '一一' and tones[0] == 1:
         tones[0] = 2 if tones[1] in (4, 0) else 4
-    if expression.startswith('不') and tones[0] == 4:
+    elif expression.startswith('不') and tones[0] == 4:
         tones[0] = 2 if tones[1] == 4 else 4
+    elif expression in exceptions_map:
+        tones = exceptions_map[expression]
     return readings, tones
 
 with open('cedict_tabs.txt', 'r', encoding='utf-8') as fin:
