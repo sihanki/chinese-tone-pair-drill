@@ -9,6 +9,7 @@ import PlayIcon from './PlayIcon'
 interface Props {
   questions: Word[]
   keyboardEnabled: boolean
+  listenOnce: boolean
   onFinish: (results: AnswerRecord[]) => void
   onQuit: (results: AnswerRecord[]) => void
 }
@@ -19,7 +20,7 @@ interface Selection {
   second: number | null
 }
 
-export default function QuizScreen({ questions, keyboardEnabled, onFinish, onQuit }: Props) {
+export default function QuizScreen({ questions, keyboardEnabled, listenOnce, onFinish, onQuit }: Props) {
   const [index, setIndex] = useState(0)
   const [selection, setSelection] = useState<Selection>({ first: null, second: null })
   const [revealed, setRevealed] = useState(false)
@@ -48,13 +49,13 @@ export default function QuizScreen({ questions, keyboardEnabled, onFinish, onQui
   useEffect(() => {
     function onKeyDown(e: KeyboardEvent) {
       if (e.repeat || e.ctrlKey || e.metaKey || e.altKey) return
-      if (e.key.toLowerCase() === 'r') {
+      if (e.key.toLowerCase() === 'r' && (!listenOnce || revealed)) {
         playAudio(word.audio)
       }
     }
     window.addEventListener('keydown', onKeyDown)
     return () => window.removeEventListener('keydown', onKeyDown)
-  }, [word])
+  }, [word, listenOnce, revealed])
 
   useEffect(() => {
     if (keyboardEnabled) {
@@ -175,23 +176,25 @@ export default function QuizScreen({ questions, keyboardEnabled, onFinish, onQui
         <div className="progress-fill" style={{ width: `${((index + (revealed ? 1 : 0)) / total) * 100}%` }} />
       </div>
 
-      <div className="audio-area">
-        <button
-          type="button"
-          className="play-button"
-          aria-label="Play audio"
-          onClick={() => playAudio(word.audio)}
-        >
-          <PlayIcon size={64} />
-        </button>
-        <button
-          type="button"
-          className="btn ghost small"
-          onClick={() => playAudio(word.audio)}
-        >
-          Replay
-        </button>
-      </div>
+      {(!listenOnce || revealed) && (
+        <div className="audio-area">
+          <button
+            type="button"
+            className="play-button"
+            aria-label="Play audio"
+            onClick={() => playAudio(word.audio)}
+          >
+            <PlayIcon size={64} />
+          </button>
+          <button
+            type="button"
+            className="btn ghost small"
+            onClick={() => playAudio(word.audio)}
+          >
+            Replay
+          </button>
+        </div>
+      )}
 
       <div className="answer-area">
         <div className="tone-row">
