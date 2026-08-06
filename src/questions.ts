@@ -42,9 +42,10 @@ export function generateQuestions(
     const candidates = selected
       .map((pattern) => ({ pattern, alloc: alloc[pattern], avail: available[pattern] }))
       .filter((c) => c.alloc < c.avail)
-      .sort((a, b) => a.alloc - b.alloc)
     if (candidates.length === 0) break
-    alloc[candidates[0].pattern]++
+    const min = Math.min(...candidates.map((c) => c.alloc))
+    const best = sample(candidates.filter((c) => c.alloc === min), 1)[0]
+    alloc[best.pattern]++
     remaining--
   }
 
