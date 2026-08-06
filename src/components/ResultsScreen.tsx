@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import type { AnswerRecord } from '../types'
 import { formatPattern } from '../data'
-import { audioUrl } from '../config'
+import { playAudio } from '../audio'
 import PlayIcon from './PlayIcon'
 
 interface Props {
@@ -16,11 +16,6 @@ function formatDuration(ms: number): string {
   const min = Math.floor(total / 60)
   const sec = total % 60
   return `${min}:${String(sec).padStart(2, '0')}`
-}
-
-function playAudio(audioFile: string) {
-  const audio = new Audio(audioUrl(audioFile))
-  audio.play().catch(() => {})
 }
 
 export default function ResultsScreen({ results, startTime, endTime, onRestart }: Props) {
