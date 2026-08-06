@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import type { AnswerRecord, Word } from '../types'
-import { FIRST_TONES, SECOND_TONES, formatPattern, toneLabel } from '../data'
+import { FIRST_TONES, SECOND_TONES, formatPattern, isCorrectAnswer, toneLabel } from '../data'
 import { markSyllable } from '../pinyin'
 import { audioUrl } from '../config'
 import PlayIcon from './PlayIcon'
@@ -26,6 +26,11 @@ export default function QuizScreen({ questions, onFinish, onQuit }: Props) {
 
   const word = questions[index]
   const [correctFirst, correctSecond] = word.pattern.split(' ').map(Number)
+  const userPattern =
+    selection.first !== null && selection.second !== null
+      ? `${selection.first} ${selection.second}`
+      : null
+  const correct = userPattern !== null && isCorrectAnswer(word.pattern, userPattern)
   const syllables = word.pinyin.split(' ')
   const firstSyllable = syllables[0] ?? ''
   const secondSyllable = syllables[1] ?? ''
@@ -44,13 +49,12 @@ export default function QuizScreen({ questions, onFinish, onQuit }: Props) {
   useEffect(() => {
     if (revealed || selection.first === null || selection.second === null) return
     const userPattern = `${selection.first} ${selection.second}`
-    const correct = userPattern === word.pattern
     setResults((prev) => [
       ...prev,
       { index, word, correctPattern: word.pattern, userPattern, correct },
     ])
     setRevealed(true)
-  }, [selection, revealed, index, word])
+  }, [selection, revealed, index, word, correct])
 
   function handleTone(position: Position, tone: number) {
     if (revealed) return
@@ -73,8 +77,8 @@ export default function QuizScreen({ questions, onFinish, onQuit }: Props) {
   function toneClass(position: Position, tone: number): string {
     let cls = `tone-btn tone-${tone}`
     const userTone = selection[position]
-    const correctTone = position === 'first' ? correctFirst : correctSecond
     if (revealed) {
+      const correctTone = correct ? userTone : position === 'first' ? correctFirst : correctSecond
       if (tone === correctTone) {
         cls += ' correct'
       } else if (tone === userTone) {
@@ -155,11 +159,11 @@ export default function QuizScreen({ questions, onFinish, onQuit }: Props) {
         </div>
       </div>
 
-      <div className={`feedback ${revealed ? (selection.first === correctFirst && selection.second === correctSecond ? 'correct' : 'incorrect') : 'hidden'}`}>
+      <div className={`feedback ${revealed ? (correct ? 'correct' : 'incorrect') : 'hidden'}`}>
         {revealed && (
           <>
             <p className="feedback-title">
-              {selection.first === correctFirst && selection.second === correctSecond
+              {correct
                 ? 'Correct!'
                 : `Incorrect — correct pair: ${formatPattern(word.pattern)}`}
             </p>

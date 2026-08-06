@@ -8,6 +8,16 @@ export const ALL_PATTERNS: string[] = FIRST_TONES.flatMap((first) =>
   SECOND_TONES.map((second) => `${first} ${second}`),
 )
 
+const SANDHI_PAIRS = new Set(['2 3', '3 3'])
+
+export function acceptedPatterns(pattern: string): string[] {
+  return SANDHI_PAIRS.has(pattern) ? ['2 3', '3 3'] : [pattern]
+}
+
+export function isCorrectAnswer(pattern: string, answer: string): boolean {
+  return acceptedPatterns(pattern).includes(answer)
+}
+
 export function toneLabel(tone: number): string {
   return String(tone)
 }
