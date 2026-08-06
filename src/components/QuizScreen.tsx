@@ -91,9 +91,17 @@ export default function QuizScreen({ questions, onFinish, onQuit }: Props) {
         <span className="muted">
           Question {index + 1} / {total}
         </span>
-        <button type="button" className="btn ghost small" onClick={() => {
-          if (window.confirm('Quit the drill?')) onQuit(results)
-        }}>
+        <button
+          type="button"
+          className="btn ghost small"
+          onClick={() => {
+            if (results.length === 0) {
+              onQuit(results)
+            } else if (window.confirm('Quit the drill?\nYou will be redirected to the results screen.')) {
+              onQuit(results)
+            }
+          }}
+        >
           Quit
         </button>
       </div>
