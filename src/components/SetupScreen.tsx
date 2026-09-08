@@ -5,7 +5,7 @@ import { loadSettings } from '../settings'
 
 interface Props {
   groups: Map<string, Word[]>
-  onStart: (selected: string[], count: number, keyboardEnabled: boolean, listenOnce: boolean) => void
+  onStart: (selected: string[], count: number, keyboardEnabled: boolean, listenOnce: boolean, blurHanzi: boolean) => void
 }
 
 export default function SetupScreen({ groups, onStart }: Props) {
@@ -14,6 +14,7 @@ export default function SetupScreen({ groups, onStart }: Props) {
   const [count, setCount] = useState(initial.count)
   const [keyboardEnabled, setKeyboardEnabled] = useState(initial.keyboardEnabled)
   const [listenOnce, setListenOnce] = useState(initial.listenOnce)
+  const [blurHanzi, setBlurHanzi] = useState(initial.blurHanzi)
 
   const maxAvailable = useMemo(() => {
     let total = 0
@@ -122,13 +123,21 @@ export default function SetupScreen({ groups, onStart }: Props) {
           />
           <span>"Listen once" mode</span>
         </label>
+        <label className="option-row">
+          <input
+            type="checkbox"
+            checked={blurHanzi}
+            onChange={(e) => setBlurHanzi(e.target.checked)}
+          />
+          <span>Blur hanzi</span>
+        </label>
       </div>
 
       <button
         type="button"
         className="btn primary big"
         disabled={!valid}
-        onClick={() => onStart([...selected], clampedCount, keyboardEnabled, listenOnce)}
+        onClick={() => onStart([...selected], clampedCount, keyboardEnabled, listenOnce, blurHanzi)}
       >
         Start Drill
       </button>

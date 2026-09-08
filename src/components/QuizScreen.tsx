@@ -10,6 +10,7 @@ interface Props {
   questions: Word[]
   keyboardEnabled: boolean
   listenOnce: boolean
+  blurHanzi: boolean
   onFinish: (results: AnswerRecord[]) => void
   onQuit: (results: AnswerRecord[]) => void
 }
@@ -20,7 +21,7 @@ interface Selection {
   second: number | null
 }
 
-export default function QuizScreen({ questions, keyboardEnabled, listenOnce, onFinish, onQuit }: Props) {
+export default function QuizScreen({ questions, keyboardEnabled, listenOnce, blurHanzi, onFinish, onQuit }: Props) {
   const [index, setIndex] = useState(0)
   const [selection, setSelection] = useState<Selection>({ first: null, second: null })
   const [revealed, setRevealed] = useState(false)
@@ -256,7 +257,7 @@ export default function QuizScreen({ questions, keyboardEnabled, listenOnce, onF
                 ? 'Correct!'
                 : `Incorrect — correct pair: ${formatPattern(word.pattern)}`}
             </p>
-            <p className="word-big">{word.expression}</p>
+            <p className={`word-big${blurHanzi ? ' hanzi-blurred' : ''}`}>{word.expression}</p>
             <p className="word-pinyin">{markPinyin(word.pinyin, word.pattern)}</p>
           </>
         )}

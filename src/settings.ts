@@ -5,6 +5,7 @@ export interface SetupSettings {
   count: number
   keyboardEnabled: boolean
   listenOnce: boolean
+  blurHanzi: boolean
 }
 
 const STORAGE_KEY = 'tone-drill-settings'
@@ -17,6 +18,7 @@ export function loadSettings(): SetupSettings {
     count: 20,
     keyboardEnabled: false,
     listenOnce: false,
+    blurHanzi: false,
   }
   try {
     const raw = localStorage.getItem(STORAGE_KEY)
@@ -37,10 +39,11 @@ export function loadSettings(): SetupSettings {
         : defaults.count
     const keyboardEnabled = obj.keyboardEnabled === true
     const listenOnce = obj.listenOnce === true
+    const blurHanzi = obj.blurHanzi === true
     if (selected.length === 0) {
       return defaults
     }
-    return { selected, count, keyboardEnabled, listenOnce }
+    return { selected, count, keyboardEnabled, listenOnce, blurHanzi }
   } catch {
     return defaults
   }
