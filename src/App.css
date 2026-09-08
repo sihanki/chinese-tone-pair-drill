@@ -370,6 +370,16 @@ h2 {
   color: var(--muted);
 }
 
+.word-big.hanzi-blurred {
+  filter: blur(7px);
+  cursor: pointer;
+  transition: filter 0.2s;
+}
+
+.word-big.hanzi-blurred:hover {
+  filter: none;
+}
+
 /* Results */
 .stat-cards {
   width: 100%;
